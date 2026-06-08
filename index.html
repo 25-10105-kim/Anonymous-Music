@@ -1,261 +1,82 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anonymous Music</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-}
-
 body{
   margin:0;
-  background:#0f0f0f;
+  background:#111;
   color:white;
   font-family:Arial,sans-serif;
 }
 
-/* HEADER */
-
 header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:#1a1a1a;
-  padding:22px;
   text-align:center;
-  border-bottom:1px solid #2a2a2a;
+  padding:20px;
+  background:#1a1a1a;
 }
 
 h1{
-  margin:0;
   color:#ff4fa3;
-  font-size:32px;
 }
 
-/* CONTROL */
-
-.controls{
-  position:sticky;
-  top:86px;
-  z-index:99;
-
+.upload{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
-
   padding:15px;
-  background:#111;
-  border-bottom:1px solid #222;
 }
 
-input,
-select,
-button{
+input,select,button{
+  padding:12px;
   border:none;
-  border-radius:12px;
-  padding:13px;
-  font-size:14px;
+  border-radius:10px;
 }
 
-input,
-select{
+input,select{
   flex:1;
-  background:#2a2a2a;
+  background:#222;
   color:white;
-}
-
-input:focus,
-select:focus{
-  outline:none;
-  border:1px solid #ff4fa3;
 }
 
 button{
   background:#ff4fa3;
   color:white;
   cursor:pointer;
-  transition:0.2s;
 }
 
-button:hover{
-  opacity:0.9;
-}
-
-/* MAIN */
-
-main{
-  padding:20px;
+#musicList{
   display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(330px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
   gap:20px;
+  padding:20px;
 }
-
-/* GENRE TITLE */
-
-.genre-title{
-  grid-column:1/-1;
-  margin-top:25px;
-  font-size:30px;
-  color:#ff4fa3;
-  font-weight:bold;
-}
-
-/* CARD */
 
 .card{
   background:#1b1b1b;
-  border-radius:18px;
+  border-radius:15px;
   overflow:hidden;
-  box-shadow:0 0 14px rgba(0,0,0,0.45);
-  transition:0.2s;
-}
-
-.card:hover{
-  transform:translateY(-4px);
 }
 
 iframe{
   width:100%;
   aspect-ratio:16/9;
   border:none;
-  display:block;
-  background:black;
 }
 
-.card-content{
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.genre-badge{
-  display:inline-block;
-  background:#ff4fa3;
-  padding:5px 12px;
-  border-radius:999px;
-  font-size:12px;
-  width:fit-content;
-}
-
-.title{
-  font-size:21px;
-  color:#ffb3d2;
-  word-break:break-word;
-}
-
-.likes{
-  color:#ffb3d2;
-  font-size:14px;
-}
-
-/* COMMENT */
-
-.comment-row{
-  display:flex;
-  gap:8px;
-}
-
-.comment-row input{
-  flex:1;
-  margin:0;
-}
-
-.comment-row button{
-  width:auto;
-  white-space:nowrap;
-  padding:0 18px;
-}
-
-.comments{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+.content{
+  padding:15px;
 }
 
 .comment{
   background:#2a2a2a;
-  border-radius:10px;
-  padding:10px 40px 10px 12px;
-  position:relative;
-  word-break:break-word;
-  font-size:14px;
-}
-
-.delete-comment{
-  position:absolute;
-  top:50%;
-  right:10px;
-  transform:translateY(-50%);
-
-  background:none;
-  border:none;
-
-  color:#ff7c7c;
-  cursor:pointer;
-
-  width:auto !important;
-  padding:0 !important;
-}
-
-/* ACTIONS */
-
-.action-row{
-  display:flex;
-  gap:8px;
+  padding:8px;
+  border-radius:8px;
   margin-top:5px;
 }
-
-.action-row button{
-  flex:1;
-}
-
-.genre-change{
-  background:#444;
-  color:white;
-}
-
-/* DELETE */
-
-.delete-btn{
-  background:#ff2f2f;
-}
-
-/* EMPTY */
-
-.no-result{
-  grid-column:1/-1;
-  text-align:center;
-  color:#777;
-  padding:70px;
-  font-size:22px;
-}
-
-/* FOOTER */
-
-.footer{
-  text-align:center;
-  color:#666;
-  padding:40px;
-  font-size:13px;
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
-  .controls{
-    flex-direction:column;
-  }
-
-}
-
 </style>
 </head>
 
@@ -265,79 +86,26 @@ iframe{
   <h1>🎧 Anonymous Music</h1>
 </header>
 
-<!-- SEARCH -->
-
-<div class="controls">
-
-  <input
-    id="searchInput"
-    placeholder="노래 / 댓글 검색..."
-    oninput="renderSongs()"
-  >
-
-  <select
-    id="genreFilter"
-    onchange="renderSongs()"
-  >
-
-    <option value="전체">전체 장르</option>
-    <option value="발라드">발라드</option>
-    <option value="힙합">힙합</option>
-    <option value="락">락</option>
-    <option value="POP">POP</option>
-    <option value="KPOP">KPOP</option>
-    <option value="인디">인디</option>
-    <option value="JPOP">JPOP</option>
-    <option value="OST">OST</option>
-    <option value="기타">기타</option>
-
-  </select>
-
-  <select
-    id="sortSelect"
-    onchange="renderSongs()"
-  >
-
-    <option value="latest">최신순</option>
-    <option value="likes">인기순</option>
-    <option value="name">이름순</option>
-
-  </select>
-
-</div>
-
-<!-- MUSIC LIST -->
-
-<main id="musicList"></main>
-
-<!-- UPLOAD -->
-
-<div class="controls">
+<div class="upload">
 
   <input
     id="titleInput"
-    placeholder="노래 제목"
-  >
+    placeholder="노래 제목">
 
   <input
     id="linkInput"
-    placeholder="유튜브 링크"
-  >
+    placeholder="유튜브 링크">
 
   <select id="genreInput">
-
-    <option value="전체">전체 장르</option>
-    <option value="발라드">발라드</option>
-    <option value="힙합">힙합</option>
-    <option value="락">락</option>
-    <option value="POP">POP</option>
-    <option value="KPOP">KPOP</option>
-    <option value="인디">인디</option>
-    <option value="JPOP">JPOP</option>
-    <option value="OST">OST</option>
-    <option value="기타">기타</option>
-
-
+    <option>발라드</option>
+    <option>힙합</option>
+    <option>락</option>
+    <option>POP</option>
+    <option>KPOP</option>
+    <option>인디</option>
+    <option>JPOP</option>
+    <option>OST</option>
+    <option>기타</option>
   </select>
 
   <button onclick="addSong()">
@@ -346,28 +114,14 @@ iframe{
 
 </div>
 
-<div class="footer">
-  Anonymous Music © 2026
-</div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  push,
-  onValue,
-  set
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<div id="musicList"></div>
+
 <script>
 
-/* STORAGE */
-
 let songs =
-  JSON.parse(
-    localStorage.getItem("songs")
-  ) || [];
-
-/* SAVE */
+JSON.parse(
+localStorage.getItem("songs")
+) || [];
 
 function saveSongs(){
 
@@ -377,21 +131,6 @@ function saveSongs(){
   );
 
 }
-
-/* ESCAPE */
-
-function escapeHTML(str){
-
-  return str
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-/* GET YOUTUBE ID */
 
 function getYoutubeID(url){
 
@@ -403,66 +142,54 @@ function getYoutubeID(url){
       return u.pathname.slice(1);
     }
 
-    if(u.searchParams.get("v")){
-      return u.searchParams.get("v");
-    }
+    return u.searchParams.get("v");
 
-    if(u.pathname.includes("/shorts/")){
-      return u.pathname.split("/shorts/")[1];
-    }
+  }catch{
 
-  }catch(e){}
+    return "";
 
-  return "";
+  }
 
 }
-
-/* ADD SONG */
 
 function addSong(){
 
   const title =
-    document
-      .getElementById("titleInput")
-      .value
-      .trim();
+  document.getElementById("titleInput")
+  .value.trim();
 
   const link =
-    document
-      .getElementById("linkInput")
-      .value
-      .trim();
+  document.getElementById("linkInput")
+  .value.trim();
 
   const genre =
-    document
-      .getElementById("genreInput")
-      .value;
+  document.getElementById("genreInput")
+  .value;
 
   if(!title || !link){
 
-    alert("제목과 링크를 입력하세요!");
+    alert("제목과 링크를 입력하세요");
     return;
 
   }
 
   const id =
-    getYoutubeID(link);
+  getYoutubeID(link);
 
   if(!id){
 
-    alert("올바른 유튜브 링크가 아닙니다!");
+    alert("유튜브 링크가 아닙니다");
     return;
 
   }
 
   songs.unshift({
 
-    title:title,
-    id:id,
-    genre:genre,
-    comments:[],
+    title,
+    genre,
+    id,
     likes:0,
-    createdAt:Date.now()
+    comments:[]
 
   });
 
@@ -470,33 +197,14 @@ function addSong(){
 
   renderSongs();
 
-  document
-    .getElementById("titleInput")
-    .value = "";
-
-  document
-    .getElementById("linkInput")
-    .value = "";
+  document.getElementById("titleInput").value="";
+  document.getElementById("linkInput").value="";
 
 }
 
-/* LIKE */
-
 function likeSong(index){
 
-  const key =
-    "liked_" + songs[index].id;
-
-  if(localStorage.getItem(key)){
-
-    alert("이미 좋아요를 눌렀습니다!");
-    return;
-
-  }
-
   songs[index].likes++;
-
-  localStorage.setItem(key,"1");
 
   saveSongs();
 
@@ -504,91 +212,27 @@ function likeSong(index){
 
 }
 
-/* ADD COMMENT */
-
-function addComment(index,btn){
-
-  const card =
-    btn.closest(".card");
-
-  const input =
-    card.querySelector(".commentInput");
+function addComment(index){
 
   const text =
-    input.value.trim();
+  prompt("댓글 입력");
 
   if(!text) return;
 
   songs[index]
-    .comments
-    .push(text);
+  .comments
+  .push(text);
 
   saveSongs();
 
   renderSongs();
 
 }
-
-/* DELETE COMMENT */
-
-function deleteComment(songIndex,commentIndex){
-
-  songs[songIndex]
-    .comments
-    .splice(commentIndex,1);
-
-  saveSongs();
-
-  renderSongs();
-
-}
-
-/* CHANGE GENRE */
-
-function changeGenre(index){
-
-  const genres = [
-"발라드", "힙합", "락", "POP", "KPOP", "인디", "JPOP", "OST", "기타"
-  ];
-
-  const current =
-    songs[index].genre;
-
-  const next =
-    prompt(
-
-      "장르 변경\n\n" +
-      genres.join(", "),
-
-      current
-
-    );
-
-  if(!next) return;
-
-  if(!genres.includes(next)){
-
-    alert("존재하지 않는 장르입니다!");
-    return;
-
-  }
-
-  songs[index].genre = next;
-
-  saveSongs();
-
-  renderSongs();
-
-}
-
-/* DELETE SONG */
 
 function deleteSong(index){
 
-  const ok =
-    confirm("정말 삭제할까요?");
-
-  if(!ok) return;
+  if(!confirm("삭제할까요?"))
+  return;
 
   songs.splice(index,1);
 
@@ -598,285 +242,73 @@ function deleteSong(index){
 
 }
 
-/* RENDER */
-
 function renderSongs(){
 
   const musicList =
-    document.getElementById("musicList");
+  document.getElementById("musicList");
 
-  musicList.innerHTML = "";
+  musicList.innerHTML="";
 
-  const keyword =
-    document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
+  songs.forEach((song,index)=>{
 
-  const genreFilter =
-    document
-      .getElementById("genreFilter")
-      .value;
+    const card =
+    document.createElement("div");
 
-  const sort =
-    document
-      .getElementById("sortSelect")
-      .value;
+    card.className="card";
 
-  /* FILTER */
+    card.innerHTML=`
 
-  let filtered =
-    songs.filter(song => {
+      <iframe
+      src="https://www.youtube.com/embed/${song.id}"
+      allowfullscreen>
+      </iframe>
 
-      const titleMatch =
-        song.title
-          .toLowerCase()
-          .includes(keyword);
+      <div class="content">
 
-      const commentMatch =
-        song.comments.some(c =>
-          c.toLowerCase()
-           .includes(keyword)
-        );
+        <h3>${song.title}</h3>
 
-      const genreMatch =
-        genreFilter === "전체"
-        ||
-        song.genre === genreFilter;
+        <p>🎵 ${song.genre}</p>
 
-      return (
-        (titleMatch || commentMatch)
-        &&
-        genreMatch
-      );
+        <p>
+        ❤️ ${song.likes}
+        </p>
 
-    });
+        <button
+        onclick="likeSong(${index})">
+        좋아요
+        </button>
 
-  /* SORT */
+        <button
+        onclick="addComment(${index})">
+        댓글
+        </button>
 
-  if(sort === "likes"){
+        <button
+        onclick="deleteSong(${index})">
+        삭제
+        </button>
 
-    filtered.sort((a,b)=>
-      b.likes - a.likes
-    );
+        <div>
 
-  }
+          ${song.comments.map(c=>`
 
-  else if(sort === "name"){
+            <div class="comment">
+              ${c}
+            </div>
 
-    filtered.sort((a,b)=>
+          `).join("")}
 
-      a.title.localeCompare(
+        </div>
 
-        b.title,
-
-        "ko-KR",
-
-        {
-          sensitivity:"base",
-          numeric:true
-        }
-
-      )
-
-    );
-
-  }
-
-  else{
-
-    filtered.sort((a,b)=>
-      b.createdAt - a.createdAt
-    );
-
-  }
-
-  /* EMPTY */
-
-  if(filtered.length === 0){
-
-    musicList.innerHTML = `
-
-      <div class="no-result">
-        검색 결과가 없습니다 🎵
       </div>
 
     `;
 
-    return;
-
-  }
-
-  /* GROUP */
-
-  const grouped = {};
-
-  filtered.forEach(song => {
-
-    if(!grouped[song.genre]){
-      grouped[song.genre] = [];
-    }
-
-    grouped[song.genre]
-      .push(song);
-
-  });
-
-  /* GENRE ORDER */
-
-  const orderedGenres = [
-
-    "발라드",
-    "힙합",
-    "락",
-    "POP",
-    "KPOP",
-    "인디",
-    "JPOP",
-    "OST",
-    "기타"
-
-  ];
-
-  orderedGenres.forEach(genre => {
-
-    if(!grouped[genre]) return;
-
-    const genreTitle =
-      document.createElement("div");
-
-    genreTitle.className =
-      "genre-title";
-
-    genreTitle.textContent =
-      "🎵 " + genre;
-
-    musicList.appendChild(
-      genreTitle
-    );
-
-    grouped[genre]
-      .forEach(song => {
-
-      const realIndex =
-        songs.indexOf(song);
-
-      const card =
-        document.createElement("div");
-
-      card.className = "card";
-
-      card.innerHTML = `
-
-        <iframe
-          src="https://www.youtube.com/embed/${song.id}"
-          allowfullscreen>
-        </iframe>
-
-        <div class="card-content">
-
-          <div class="genre-badge">
-            ${song.genre}
-          </div>
-
-          <div class="title">
-            ${escapeHTML(song.title)}
-          </div>
-
-          <div class="likes">
-            ❤️ 좋아요 ${song.likes}
-          </div>
-
-          <button
-            onclick="likeSong(${realIndex})">
-            좋아요
-          </button>
-
-          <div class="comment-row">
-
-            <input
-              class="commentInput"
-              placeholder="익명 댓글 입력"
-            >
-
-            <button
-              onclick="addComment(${realIndex},this)">
-              댓글 달기
-            </button>
-
-          </div>
-
-          <div class="comments">
-
-            ${song.comments.map((c,i)=>`
-
-              <div class="comment">
-
-                익명 :
-                ${escapeHTML(c)}
-
-                <button
-                  class="delete-comment"
-                  onclick="deleteComment(${realIndex},${i})">
-
-                  ✕
-
-                </button>
-
-              </div>
-
-            `).join("")}
-
-          </div>
-
-          <div class="action-row">
-
-            <button
-              class="genre-change"
-              onclick="changeGenre(${realIndex})">
-
-              장르 변경
-
-            </button>
-
-            <button
-              class="delete-btn"
-              onclick="deleteSong(${realIndex})">
-
-              삭제
-
-            </button>
-
-          </div>
-
-        </div>
-
-      `;
-
-      musicList.appendChild(card);
-
-    });
+    musicList.appendChild(card);
 
   });
 
 }
-
-/* ENTER */
-
-document
-  .getElementById("linkInput")
-  .addEventListener(
-    "keypress",
-    function(e){
-
-      if(e.key === "Enter"){
-        addSong();
-      }
-
-});
-
-/* START */
 
 renderSongs();
 
@@ -884,4 +316,3 @@ renderSongs();
 
 </body>
 </html>
-```
